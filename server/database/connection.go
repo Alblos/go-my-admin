@@ -7,7 +7,7 @@ import (
 )
 
 type DBConnection struct {
-	cnx *sql.DB
+	Cnx *sql.DB
 }
 
 // Connect to the database
@@ -17,13 +17,13 @@ func (DbInstance *DBConnection) Connect(connectionString string) (err error) {
 		return
 	}
 
-	DbInstance.cnx, err = sql.Open("postgres", connectionString)
+	DbInstance.Cnx, err = sql.Open("postgres", connectionString)
 	if err != nil {
 		logger.Error("Error opening database connection: ", err)
 		return err
 	}
 
-	err = DbInstance.cnx.Ping()
+	err = DbInstance.Cnx.Ping()
 	if err != nil {
 		logger.Error("Error pinging database: ", err)
 		return err

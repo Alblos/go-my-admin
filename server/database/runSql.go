@@ -14,7 +14,7 @@ func (DbInstance *DBConnection) RunSqlFile(filePath string) error {
 	}
 
 	// Run SQL
-	_, err = DbInstance.cnx.Exec(string(file))
+	_, err = DbInstance.Cnx.Exec(string(file))
 	if err != nil {
 		return err
 	}
@@ -24,7 +24,7 @@ func (DbInstance *DBConnection) RunSqlFile(filePath string) error {
 
 // RunRawQuery runs a raw SQL query
 func (DbInstance *DBConnection) RunRawQuery(query string) (rows *sql.Rows, err error) {
-	rows, err = DbInstance.cnx.Query(query)
+	rows, err = DbInstance.Cnx.Query(query)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (DbInstance *DBConnection) RunRawQuery(query string) (rows *sql.Rows, err e
 
 // RunQueryWithParams runs a SQL query with params
 func (DbInstance *DBConnection) RunQueryWithParams(query string, params ...interface{}) (rows *sql.Rows, err error) {
-	rows, err = DbInstance.cnx.Query(query, params...)
+	rows, err = DbInstance.Cnx.Query(query, params...)
 	if err != nil {
 		return nil, err
 	}

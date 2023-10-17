@@ -2,6 +2,7 @@ package connections
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/go-my-admin/server/connections"
 	"github.com/go-my-admin/server/database"
 )
 
@@ -25,14 +26,7 @@ func HandleUpdateConnection(c *gin.Context) {
 		return
 	}
 
-	if req.Id == 0 {
-		c.JSON(400, gin.H{
-			"error": "ID is required",
-		})
-		return
-	}
-
-	if req.Name == "" || req.DbName == "" || req.Host == "" || req.Port == 0 || req.Username == "" {
+	if req.Name == "" || req.DbName == "" || req.Host == "" || req.Port == 0 || req.Username == "" || req.Id == 0 {
 		c.JSON(400, gin.H{
 			"error": "Missing required fields",
 		})
@@ -40,6 +34,20 @@ func HandleUpdateConnection(c *gin.Context) {
 	}
 
 	db := database.InternalDb
+
+	exists, err := connections.CheckIfConnectionWithIdExists(req.Id)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	if !exists {
+		c.JSON(404, gin.H{
+			"error": "Connection with the given ID does not exist",
+		})
+		return
+	}
 
 	_, err = db.RunQueryWithParams("UPDATE connections SET common_name = $2, database_name = $3, host = $4, port = $5, username = $6, ssl_mode = $7 WHERE id = $1", req.Id, req.Name, req.DbName, req.Host, req.Port, req.Username, req.SslMode)
 	if err != nil {
