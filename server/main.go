@@ -6,6 +6,7 @@ import (
 	"github.com/go-my-admin/server/logger"
 	"github.com/go-my-admin/server/routes/connections"
 	"github.com/go-my-admin/server/routes/general"
+	"github.com/go-my-admin/server/routes/interactDatabases"
 	"github.com/go-my-admin/server/utils/bootstrap"
 )
 
@@ -34,9 +35,10 @@ func main() {
 	// Load middlewares
 	r.Use(gin.Recovery()) // Recover from panics and return 500 in case of panic
 
-	// Load routers
-	general.RouterGeneral(r)
-	connections.RouterConnections(r)
+	// Load routes
+	general.Router(r)
+	connections.Router(r)
+	interactDatabases.Router(r)
 
 	err = r.Run(":3000")
 	if err != nil {

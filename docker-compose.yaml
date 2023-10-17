@@ -1,6 +1,6 @@
 version: '3'
 services:
-  internal-db:
+  internal_db:
     image: postgres:16.0
     container_name: internal-db
     restart: always
@@ -12,6 +12,23 @@ services:
       POSTGRES_DB: gomyadmin
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - test-network
+  test_database:
+    image: postgres:16.0
+    container_name: test-database
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 4c9642ea7580a191
+      POSTGRES_DB: holaaa
+    networks:
+      - test-network
 volumes:
-    postgres-data:
+  postgres-data:
+networks:
+  test-network:
+
     

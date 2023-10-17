@@ -1,6 +1,8 @@
 package database
 
 import (
+	"fmt"
+	"github.com/go-my-admin/server/database/internalDbTypes"
 	"github.com/go-my-admin/server/logger"
 	"os"
 )
@@ -12,6 +14,24 @@ func GetConnectionStringInternalDb() string {
 	if connectionString == "" {
 		logger.Error("DB_CONNECTION_STRING not set", nil)
 		return ""
+	}
+
+	return connectionString
+}
+
+// GetConnectionString returns the connection string for the given connection
+func GetConnectionString(connectionData internalDbTypes.Connection) string {
+	connectionString := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=",
+		connectionData.Username,
+		connectionData.Password,
+		connectionData.Host,
+		connectionData.Port,
+		connectionData.DatabaseName)
+
+	if connectionData.SslMode == "true" {
+		connectionString += "require"
+	} else {
+		connectionString += "disable"
 	}
 
 	return connectionString
