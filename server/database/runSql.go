@@ -1,6 +1,7 @@
 package database
 
 import (
+	"database/sql"
 	"os"
 )
 
@@ -19,4 +20,24 @@ func (DbInstance *DBConnection) RunSqlFile(filePath string) error {
 	}
 
 	return nil
+}
+
+// RunRawQuery runs a raw SQL query
+func (DbInstance *DBConnection) RunRawQuery(query string) (rows *sql.Rows, err error) {
+	rows, err = DbInstance.cnx.Query(query)
+	if err != nil {
+		return nil, err
+	}
+
+	return rows, nil
+}
+
+// RunQueryWithParams runs a SQL query with params
+func (DbInstance *DBConnection) RunQueryWithParams(query string, params ...interface{}) (rows *sql.Rows, err error) {
+	rows, err = DbInstance.cnx.Query(query, params...)
+	if err != nil {
+		return nil, err
+	}
+
+	return rows, nil
 }

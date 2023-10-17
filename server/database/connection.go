@@ -32,3 +32,5 @@ func (DbInstance *DBConnection) Connect(connectionString string) (err error) {
 	logger.Info("Connected to internal database")
 	return nil
 }
+
+var InternalDb DBConnection

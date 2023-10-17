@@ -4,11 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-my-admin/server/database"
 	"github.com/go-my-admin/server/logger"
+	"github.com/go-my-admin/server/routes/connections"
 	"github.com/go-my-admin/server/routes/general"
 	"github.com/go-my-admin/server/utils/bootstrap"
 )
-
-var InternalDb database.DBConnection
 
 func main() {
 	// load env variables
@@ -19,7 +18,7 @@ func main() {
 	}
 
 	// Init connection to internal database
-	if bootstrap.BootInternalDb(&InternalDb) != nil {
+	if bootstrap.BootInternalDb(&database.InternalDb) != nil {
 		logger.Error("Error bootstrapping internal database: ", err)
 		return
 	}
@@ -37,6 +36,7 @@ func main() {
 
 	// Load routers
 	general.RouterGeneral(r)
+	connections.RouterConnections(r)
 
 	err = r.Run(":3000")
 	if err != nil {
