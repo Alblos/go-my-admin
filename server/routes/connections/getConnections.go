@@ -40,7 +40,7 @@ func HandleGetConnectionById(c *gin.Context) {
 	db := database.InternalDb
 
 	connectionId := c.Param("id")
-	connection, err := db.RunQueryWithParams("SELECT * FROM connections WHERE id = $1", connectionId)
+	connection, err := db.RunQueryWithParams("SELECT id, common_name, database_name, host, port, username, password, ssl_mode FROM connections WHERE id = $1", connectionId)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"error": err.Error(),
@@ -48,7 +48,16 @@ func HandleGetConnectionById(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{
-		"connection": connection,
-	})
+	var connectionMapped internalDbTypes.Connection
+	for connection.Next() {
+		err = connection.Scan(&connectionMapped.Id, &connectionMapped.CommonName, &connectionMapped.DatabaseName, &connectionMapped.Host, &connectionMapped.Port, &connectionMapped.Username, &connectionMapped.Password, &connectionMapped.SslMode)
+		if err != nil {
+			c.JSON(500, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+	}
+
+	c.JSON(200, connectionMapped)
 }
