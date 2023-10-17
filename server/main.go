@@ -1,32 +1,34 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-my-admin/server/database"
+	"github.com/go-my-admin/server/logger"
 	"github.com/go-my-admin/server/routes/general"
 	"github.com/go-my-admin/server/utils/bootstrap"
 )
 
-func main() {
+var InternalDb database.DBConnection
 
+func main() {
 	// load env variables
 	err := bootstrap.LoadEnv()
 	if err != nil {
-		fmt.Println("Error loading env variables: ", err)
+		logger.Error("Error loading env variables: ", err)
 		return
 	}
 
-	err = database.Connect()
+	err = InternalDb.Connect(database.GetConnectionStringInternalDb())
 	if err != nil {
-		fmt.Println("Error connecting to database: ", err)
+		logger.Error("Error connecting to internal database: ", err)
 		return
 	}
 
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
-	err = r.SetTrustedProxies([]string{"*"})
+	err = r.SetTrustedProxies([]string{"127.0.0.1"})
 	if err != nil {
-		fmt.Println("Error setting trusted proxies: ", err)
+		logger.Error("Error setting trusted proxies: ", err)
 		return
 	}
 
@@ -38,7 +40,7 @@ func main() {
 
 	err = r.Run(":3000")
 	if err != nil {
-		fmt.Println("Error starting server: ", err)
+		logger.Error("Error running server: ", err)
 		return
 	}
 }
