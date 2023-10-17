@@ -1,0 +1,17 @@
+version: '3'
+services:
+  internal-db:
+    image: postgres:16.0
+    container_name: internal-db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 562bb3889e26d8fe
+      POSTGRES_DB: gomyadmin
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+volumes:
+    postgres-data:
+    
