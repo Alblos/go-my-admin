@@ -21,7 +21,7 @@ func HandleCreateConnection(c *gin.Context) {
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
 		c.JSON(400, gin.H{
-			"error": err.Error(),
+			"error": "Invalid request body",
 		})
 		return
 	}

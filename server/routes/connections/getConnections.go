@@ -9,7 +9,7 @@ import (
 func HandleGetAllConnections(c *gin.Context) {
 	db := database.InternalDb
 
-	connections, err := db.RunRawQuery("SELECT id, common_name, database_name, host, port, username, password, ssl_mode FROM connections")
+	connections, err := db.RunRawQuery("SELECT id, common_name, database_name, host, port, username, ssl_mode FROM connections")
 	if err != nil {
 		c.JSON(500, gin.H{
 			"error": err.Error(),
@@ -21,7 +21,7 @@ func HandleGetAllConnections(c *gin.Context) {
 
 	for connections.Next() {
 		var connection internalDbTypes.Connection
-		err = connections.Scan(&connection.Id, &connection.CommonName, &connection.DatabaseName, &connection.Host, &connection.Port, &connection.Username, &connection.Password, &connection.SslMode)
+		err = connections.Scan(&connection.Id, &connection.CommonName, &connection.DatabaseName, &connection.Host, &connection.Port, &connection.Username, &connection.SslMode)
 		if err != nil {
 			c.JSON(500, gin.H{
 				"error": err.Error(),
@@ -40,7 +40,7 @@ func HandleGetConnectionById(c *gin.Context) {
 	db := database.InternalDb
 
 	connectionId := c.Param("id")
-	connection, err := db.RunQueryWithParams("SELECT id, common_name, database_name, host, port, username, password, ssl_mode FROM connections WHERE id = $1", connectionId)
+	connection, err := db.RunQueryWithParams("SELECT id, common_name, database_name, host, port, username, ssl_mode FROM connections WHERE id = $1", connectionId)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"error": err.Error(),
@@ -50,7 +50,7 @@ func HandleGetConnectionById(c *gin.Context) {
 
 	var connectionMapped internalDbTypes.Connection
 	for connection.Next() {
-		err = connection.Scan(&connectionMapped.Id, &connectionMapped.CommonName, &connectionMapped.DatabaseName, &connectionMapped.Host, &connectionMapped.Port, &connectionMapped.Username, &connectionMapped.Password, &connectionMapped.SslMode)
+		err = connection.Scan(&connectionMapped.Id, &connectionMapped.CommonName, &connectionMapped.DatabaseName, &connectionMapped.Host, &connectionMapped.Port, &connectionMapped.Username, &connectionMapped.SslMode)
 		if err != nil {
 			c.JSON(500, gin.H{
 				"error": err.Error(),
