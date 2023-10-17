@@ -42,15 +42,6 @@ func HandleGetConnectionById(c *gin.Context) {
 	db := database.InternalDb
 
 	connectionId := c.Param("id")
-	connection, err := db.RunQueryWithParams("SELECT id, common_name, database_name, host, port, username, ssl_mode FROM connections WHERE id = $1", connectionId)
-	if err != nil {
-		c.JSON(500, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	var connectionMapped internalDbTypes.Connection
 
 	id, err := strconv.Atoi(connectionId)
 	if err != nil {
@@ -72,6 +63,16 @@ func HandleGetConnectionById(c *gin.Context) {
 		})
 		return
 	}
+
+	connection, err := db.RunQueryWithParams("SELECT id, common_name, database_name, host, port, username, ssl_mode FROM connections WHERE id = $1", connectionId)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	var connectionMapped internalDbTypes.Connection
 
 	for connection.Next() {
 		err = connection.Scan(&connectionMapped.Id, &connectionMapped.CommonName, &connectionMapped.DatabaseName, &connectionMapped.Host, &connectionMapped.Port, &connectionMapped.Username, &connectionMapped.SslMode)
