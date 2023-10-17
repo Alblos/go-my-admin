@@ -13,5 +13,11 @@ func BootInternalDb(internalDbObject *database.DBConnection) error {
 		return err
 	}
 
+	err = internalDbObject.RunSqlFile("server/database/rawSql/createTablesInternalDB.sql")
+	if err != nil {
+		logger.Error("Error running createTablesInternalDB.sql: ", err)
+		return err
+	}
+
 	return nil
 }
