@@ -18,9 +18,9 @@ func main() {
 		return
 	}
 
-	err = InternalDb.Connect(database.GetConnectionStringInternalDb())
-	if err != nil {
-		logger.Error("Error connecting to internal database: ", err)
+	// Init connection to internal database
+	if bootstrap.BootInternalDb(&InternalDb) != nil {
+		logger.Error("Error bootstrapping internal database: ", err)
 		return
 	}
 
