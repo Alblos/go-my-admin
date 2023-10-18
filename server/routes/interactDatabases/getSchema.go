@@ -30,7 +30,7 @@ func HandleGetDbSchema(c *gin.Context) {
 		return
 	}
 
-	tables, err := connections.GetTablesInDatabase(id)
+	schema, err := connections.GetFullDbSchema(id)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"error": err.Error(),
@@ -39,7 +39,8 @@ func HandleGetDbSchema(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{
-		"tables": tables,
+		"error":  false,
+		"schema": schema,
 	})
 
 }

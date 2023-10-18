@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-my-admin/server/connections"
 	"github.com/go-my-admin/server/database"
-	"github.com/go-my-admin/server/database/internalDbTypes"
+	"github.com/go-my-admin/server/database/types"
 	"strconv"
 )
 
@@ -19,10 +19,10 @@ func HandleGetAllConnections(c *gin.Context) {
 		return
 	}
 
-	var connectionsArray []internalDbTypes.Connection
+	var connectionsArray []types.Connection
 
 	for connectionsInDb.Next() {
-		var connection internalDbTypes.Connection
+		var connection types.Connection
 		err = connectionsInDb.Scan(&connection.Id, &connection.CommonName, &connection.DatabaseName, &connection.Host, &connection.Port, &connection.Username, &connection.SslMode)
 		if err != nil {
 			c.JSON(500, gin.H{
@@ -72,7 +72,7 @@ func HandleGetConnectionById(c *gin.Context) {
 		return
 	}
 
-	var connectionMapped internalDbTypes.Connection
+	var connectionMapped types.Connection
 
 	for connection.Next() {
 		err = connection.Scan(&connectionMapped.Id, &connectionMapped.CommonName, &connectionMapped.DatabaseName, &connectionMapped.Host, &connectionMapped.Port, &connectionMapped.Username, &connectionMapped.SslMode)

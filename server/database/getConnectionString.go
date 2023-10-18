@@ -2,7 +2,7 @@ package database
 
 import (
 	"fmt"
-	"github.com/go-my-admin/server/database/internalDbTypes"
+	"github.com/go-my-admin/server/database/types"
 	"github.com/go-my-admin/server/logger"
 	"os"
 )
@@ -20,7 +20,7 @@ func GetConnectionStringInternalDb() string {
 }
 
 // GetConnectionString returns the connection string for the given connection
-func GetConnectionString(connectionData internalDbTypes.Connection) string {
+func GetConnectionString(connectionData types.Connection) string {
 	connectionString := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=",
 		connectionData.Username,
 		connectionData.Password,

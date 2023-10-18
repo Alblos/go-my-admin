@@ -2,7 +2,7 @@ package connections
 
 import (
 	"github.com/go-my-admin/server/database"
-	"github.com/go-my-admin/server/database/internalDbTypes"
+	"github.com/go-my-admin/server/database/types"
 )
 
 var allConections = make(map[int]database.DBConnection)
@@ -27,7 +27,7 @@ func createConnection(id int) error {
 		return err
 	}
 
-	var connectionMapped internalDbTypes.Connection
+	var connectionMapped types.Connection
 
 	for query.Next() {
 		err = query.Scan(&connectionMapped.Id, &connectionMapped.CommonName, &connectionMapped.DatabaseName, &connectionMapped.Host, &connectionMapped.Port, &connectionMapped.Username, &connectionMapped.SslMode, &connectionMapped.Password)
