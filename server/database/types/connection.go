@@ -1,4 +1,4 @@
-package internalDbTypes
+package types
 
 type Connection struct {
 	Id           int    `json:"id"`
