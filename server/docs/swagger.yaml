@@ -158,7 +158,7 @@ paths:
       tags:
       - connections
   /connections/update:
-    post:
+    put:
       consumes:
       - application/json
       description: Update a connection

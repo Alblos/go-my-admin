@@ -144,7 +144,7 @@ const docTemplate = `{
             }
         },
         "/connections/update": {
-            "post": {
+            "put": {
                 "description": "Update a connection",
                 "consumes": [
                     "application/json"
