@@ -6,31 +6,54 @@ import (
 	"github.com/go-my-admin/server/logger"
 	"github.com/redis/go-redis/v9"
 	"strconv"
+	"sync"
 )
 
 // GetFullDbSchema returns a map of tables and columns in the given database
-func GetFullDbSchema(connectionId int) (map[string][]Column, error) {
+func GetFullDbSchema(connectionId int, useCache bool) (map[string][]Column, error) {
 
-	exists, schema, err := GetSchemaFromCache(connectionId)
-	if err != nil {
-		return nil, err
-	} else if exists {
-		return schema, nil
+	if useCache {
+		exists, schema, err := GetSchemaFromCache(connectionId)
+		if err != nil {
+			return nil, err
+		} else if exists {
+			return schema, nil
+		}
 	}
 
-	schema = make(map[string][]Column)
+	schema := make(map[string][]Column)
 
 	tables, err := getTablesInDatabase(connectionId)
 	if err != nil {
 		return nil, err
 	}
 
+	// Create a channel
+	columnsChannel := make(chan map[string][]Column)
+
+	var wg = sync.WaitGroup{}
+
 	for _, table := range tables {
-		columns, err := getColumnsInTable(connectionId, table)
-		if err != nil {
-			return nil, err
+		wg.Add(1)
+		go func(table string) {
+			defer wg.Done()
+			columns, err := getColumnsInTable(connectionId, table)
+			if err != nil {
+				logger.Error("Could not get columns in table", err)
+				return
+			}
+			columnsChannel <- map[string][]Column{table: columns}
+		}(table)
+	}
+	go func() {
+		wg.Wait()
+		close(columnsChannel)
+	}()
+
+	for columns := range columnsChannel {
+		for table, column := range columns {
+			schema[table] = column
 		}
-		schema[table] = columns
 	}
 
 	SaveSchemaToCache(schema, connectionId)
