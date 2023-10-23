@@ -6,7 +6,7 @@ module.exports = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
-	],
+  ],
   theme: {
     container: {
       center: true,
@@ -17,18 +17,33 @@ module.exports = {
     },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        main: {
+          100: "var(--primary-100)",
+          200: "var(--primary-200)",
+          300: "var(--primary-300)",
+        },
+        alter: {
+          100: "var(--accent-100)",
+          200: "var(--accent-200)",
+          300: "var(--accent-300)",
+        },
+        back: {
+          100: "var(--bg-100)",
+          200: "var(--bg-200)",
+          300: "var(--bg-300)",
+        },
+        border: "var(--bg-100)",
+        input: "var(--bg-100)",
+        ring: "var(--bg-100)",
+        background: "var(--bg-300)",
+        foreground: "var(--text-100)",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "var(--main-300)",
+          foreground: "var(--text-100)",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "var(--alter-300)",
+          foreground: "var(--text-100)",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -39,16 +54,16 @@ module.exports = {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "var(--accent-100)",
+          foreground: "black",
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "var(--bg-200)",
+          foreground: "var(--text-100)",
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "var(--bg-100))",
+          foreground: "var(--text-100))",
         },
       },
       borderRadius: {

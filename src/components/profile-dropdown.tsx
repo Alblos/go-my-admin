@@ -24,7 +24,7 @@ export default function ProfileDropdown({ }: Props) {
                     {wide && <div>Profile</div>}
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className={wide ? "w-full" : "absolute bottom-1 left-10 w-[150px]"}>
+            <DropdownMenuContent className={wide ? "w-[270px]" : "absolute bottom-1 left-10 w-[150px]"}>
                 <DropdownMenuLabel>Profile</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>Account</DropdownMenuItem>

@@ -13,8 +13,8 @@ type Props = {
 export default function NavbarLink({ to, ...props }: Props) {
     const { wide } = useNavbarToggle()
     return (
-        <NavLink to={to} className={({ isActive }) => isActive ? "[&>button]:bg-slate-950 [&>button]:hover:bg-slate-900 [&>button]:hover:text-white [&>button]:text-white" : ""} >
-            <Button variant={"outline"} {...props} className={twMerge(props.className, `w-full flex items-center py-2 ${wide ? "justify-start gap-3" : "justify-center"}`)}>
+        <NavLink to={to} className={({ isActive }) => isActive ? "[&>button]:text-main-200 [&>button]:border-r-main-200 [&>button]:border-r-4" : ""} >
+            <Button {...props} className={twMerge(props.className, `w-full bg-transparent hover:text-main-200 rounded-none flex items-center py-2 ${wide ? "justify-start gap-3" : "justify-center"}`)}>
                 {props.children}
                 {wide && <div>{props.title}</div>}
             </Button>
