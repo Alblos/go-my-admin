@@ -157,6 +157,41 @@ paths:
       summary: Delete a connection
       tags:
       - connections
+  /connections/update:
+    post:
+      consumes:
+      - application/json
+      description: Update a connection
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/connections.UpdateConnectionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns that the connection was updated successfully
+          schema:
+            type: object
+        "400":
+          description: Returns that the request body is invalid or that some required
+            fields are missing
+          schema:
+            type: object
+        "404":
+          description: Returns that the connection with the given ID does not exist
+          schema:
+            type: object
+        "500":
+          description: Internal error
+          schema:
+            type: object
+      summary: Update a connection
+      tags:
+      - connections
   /ping:
     get:
       description: Ping the server

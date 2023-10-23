@@ -28,6 +28,7 @@ type UpdateConnectionRequest struct {
 // @Failure 400 {object} object "Returns that the request body is invalid or that some required fields are missing"
 // @Failure 404 {object} object "Returns that the connection with the given ID does not exist"
 // @Failure 500 {object} object "Internal error"
+// @Router /connections/update [post]
 func HandleUpdateConnection(c *gin.Context) {
 	var req UpdateConnectionRequest
 	err := c.ShouldBindJSON(&req)
