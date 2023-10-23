@@ -9,6 +9,8 @@ import {
 } from "react-router-dom";
 import Home from './home/home.tsx'
 import Terminal from './terminal/terminal.tsx'
+import Connections from './connections/connections.tsx'
+import Metrics from './metrics/metrics.tsx'
 
 const queryClient = new QueryClient()
 
@@ -19,11 +21,15 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <App />,
+    element: <Connections />,
   },
   {
     path: "/terminal",
     element: <Terminal />
+  },
+  {
+    path: "/metrics",
+    element: <Metrics />
   },
   {
     path: "/*",
