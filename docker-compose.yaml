@@ -3,7 +3,7 @@ services:
   internal_db:
     image: postgres:16.0
     container_name: internal-db
-    restart: always
+    restart: unless-stopped
     ports:
       - "5432:5432"
     environment:
@@ -14,10 +14,19 @@ services:
       - postgres-data:/var/lib/postgresql/data
     networks:
       - test-network
+  internal_cache:
+    image: redis:7.2
+    container_name: internal-cache
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass 42ppjaM7R0ji+AAER3ZrTdzyIxE=
+    networks:
+      - test-network
   test_database:
     image: postgres:16.0
     container_name: test-database
-    restart: always
+    restart: unless-stopped
     ports:
       - "5433:5432"
     environment:

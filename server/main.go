@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/go-my-admin/server/cache"
 	"github.com/go-my-admin/server/database"
 	"github.com/go-my-admin/server/logger"
 	"github.com/go-my-admin/server/routes/connections"
@@ -21,6 +22,12 @@ func main() {
 	// Init connection to internal database
 	if bootstrap.BootInternalDb(&database.InternalDb) != nil {
 		logger.Error("Error bootstrapping internal database: ", err)
+		return
+	}
+
+	// Init connection to internal cache
+	if bootstrap.BootInternalCache(&cache.InternalCache) != nil {
+		logger.Error("Error bootstrapping internal cache: ", err)
 		return
 	}
 
