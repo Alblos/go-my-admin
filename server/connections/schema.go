@@ -1,27 +1,44 @@
 package connections
 
+import (
+	"encoding/json"
+	"github.com/go-my-admin/server/cache"
+	"github.com/go-my-admin/server/logger"
+	"github.com/redis/go-redis/v9"
+	"strconv"
+)
+
 // GetFullDbSchema returns a map of tables and columns in the given database
 func GetFullDbSchema(connectionId int) (map[string][]Column, error) {
-	var schema = make(map[string][]Column)
 
-	tables, err := GetTablesInDatabase(connectionId)
+	exists, schema, err := GetSchemaFromCache(connectionId)
+	if err != nil {
+		return nil, err
+	} else if exists {
+		return schema, nil
+	}
+
+	schema = make(map[string][]Column)
+
+	tables, err := getTablesInDatabase(connectionId)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, table := range tables {
-		columns, err := GetColumnsInTable(connectionId, table)
+		columns, err := getColumnsInTable(connectionId, table)
 		if err != nil {
 			return nil, err
 		}
 		schema[table] = columns
 	}
 
+	SaveSchemaToCache(schema, connectionId)
 	return schema, nil
 }
 
-// GetTablesInDatabase returns a list of tables in the given database
-func GetTablesInDatabase(connectionId int) ([]string, error) {
+// getTablesInDatabase returns a list of tables in the given database
+func getTablesInDatabase(connectionId int) ([]string, error) {
 	var tables []string
 
 	db, err := GetConnectionOrCreateIfNotExists(connectionId)
@@ -48,8 +65,8 @@ type Column struct {
 	Type string
 }
 
-// GetColumnsInTable returns a list of columns in the given table
-func GetColumnsInTable(connectionId int, table string) ([]Column, error) {
+// getColumnsInTable returns a list of columns in the given table
+func getColumnsInTable(connectionId int, table string) ([]Column, error) {
 	var columns = make([]Column, 0)
 
 	db, err := GetConnectionOrCreateIfNotExists(connectionId)
@@ -72,4 +89,33 @@ func GetColumnsInTable(connectionId int, table string) ([]Column, error) {
 	}
 
 	return columns, nil
+}
+
+// SaveSchemaToCache saves the schema of a database in the internal cache
+func SaveSchemaToCache(schema map[string][]Column, connectionId int) {
+	key := "schema:" + strconv.Itoa(connectionId)
+	jsonSchema, err := json.Marshal(schema)
+	if err != nil {
+		logger.Error("Could not marshal schema to JSON", err)
+		return
+	}
+	cache.InternalCache.Cnx.Set(cache.InternalCache.Ctx, key, jsonSchema, 0)
+}
+
+// GetSchemaFromCache returns the schema of a database from the internal cache
+func GetSchemaFromCache(connectionId int) (exists bool, schema map[string][]Column, err error) {
+	var jsonSchema []byte
+	key := "schema:" + strconv.Itoa(connectionId)
+	err = cache.InternalCache.Cnx.Get(cache.InternalCache.Ctx, key).Scan(&jsonSchema)
+	if err != nil {
+		if err == redis.Nil {
+			return false, nil, nil
+		} else {
+			return false, nil, err
+		}
+	}
+
+	err = json.Unmarshal(jsonSchema, &schema)
+
+	return true, schema, nil
 }

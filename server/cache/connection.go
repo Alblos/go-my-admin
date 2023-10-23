@@ -35,5 +35,3 @@ func (cache *RedisConnection) Connect(addr string, password string, db int) (err
 	logger.Info("Connected to redis " + addr)
 	return nil
 }
-
-var InternalCache RedisConnection

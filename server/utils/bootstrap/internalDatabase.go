@@ -6,7 +6,8 @@ import (
 )
 
 // BootInternalDb bootstraps the internal database
-func BootInternalDb(internalDbObject *database.DBConnection) error {
+func BootInternalDb() error {
+	internalDbObject := &database.InternalDb
 	err := internalDbObject.Connect(database.GetConnectionStringInternalDb())
 	if err != nil {
 		logger.Error("Error connecting to internal database: ", err)

@@ -5,7 +5,8 @@ import (
 	"github.com/go-my-admin/server/logger"
 )
 
-func BootInternalCache(internalCacheObject *cache.RedisConnection) error {
+func BootInternalCache() error {
+	internalCacheObject := &cache.InternalCache
 	addr, password, db := cache.GetConnectionData()
 	err := internalCacheObject.Connect(addr, password, db)
 	if err != nil {
