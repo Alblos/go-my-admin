@@ -1,8 +1,10 @@
 package connections
 
 import (
+	"database/sql"
 	"encoding/json"
 	"github.com/go-my-admin/server/cache"
+	"github.com/go-my-admin/server/database"
 	"github.com/go-my-admin/server/logger"
 	"github.com/redis/go-redis/v9"
 	"strconv"
@@ -23,7 +25,15 @@ func GetFullDbSchema(connectionId int, useCache bool) (map[string][]Column, erro
 
 	schema := make(map[string][]Column)
 
-	tables, err := getTablesInDatabase(connectionId)
+	db, err := GetConnectionReplica(connectionId)
+	defer func(Cnx *sql.DB) {
+		err := Cnx.Close()
+		if err != nil {
+			logger.Error("Could not close connection to database", err)
+		}
+	}(db.Cnx)
+
+	tables, err := getTablesInDatabase(connectionId, &db)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +47,7 @@ func GetFullDbSchema(connectionId int, useCache bool) (map[string][]Column, erro
 		wg.Add(1)
 		go func(table string) {
 			defer wg.Done()
-			columns, err := getColumnsInTable(connectionId, table)
+			columns, err := getColumnsInTable(connectionId, table, &db)
 			if err != nil {
 				logger.Error("Could not get columns in table", err)
 				return
@@ -61,10 +71,8 @@ func GetFullDbSchema(connectionId int, useCache bool) (map[string][]Column, erro
 }
 
 // getTablesInDatabase returns a list of tables in the given database
-func getTablesInDatabase(connectionId int) ([]string, error) {
+func getTablesInDatabase(connectionId int, db *database.DBConnection) ([]string, error) {
 	var tables []string
-
-	db, err := GetConnectionOrCreateIfNotExists(connectionId)
 
 	rows, err := db.Cnx.Query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
 	if err != nil {
@@ -89,10 +97,8 @@ type Column struct {
 }
 
 // getColumnsInTable returns a list of columns in the given table
-func getColumnsInTable(connectionId int, table string) ([]Column, error) {
+func getColumnsInTable(connectionId int, table string, db *database.DBConnection) ([]Column, error) {
 	var columns = make([]Column, 0)
-
-	db, err := GetConnectionOrCreateIfNotExists(connectionId)
 
 	rows, err := db.Cnx.Query("SELECT column_name, data_type FROM information_schema.columns WHERE table_name = $1", table)
 	if err != nil {

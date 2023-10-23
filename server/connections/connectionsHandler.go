@@ -18,6 +18,33 @@ func GetConnectionOrCreateIfNotExists(id int) (database.DBConnection, error) {
 	return allConections[id], nil
 }
 
+// GetConnectionReplica Returns another connection with the given ID (apart from the one already open)
+func GetConnectionReplica(id int) (database.DBConnection, error) {
+	db := database.InternalDb
+
+	query, err := db.RunQueryWithParams("SELECT id, common_name, database_name, host, port, username, ssl_mode, password FROM connections WHERE id = $1", id)
+	if err != nil {
+		return database.DBConnection{}, err
+	}
+
+	var connectionMapped types.Connection
+
+	for query.Next() {
+		err = query.Scan(&connectionMapped.Id, &connectionMapped.CommonName, &connectionMapped.DatabaseName, &connectionMapped.Host, &connectionMapped.Port, &connectionMapped.Username, &connectionMapped.SslMode, &connectionMapped.Password)
+		if err != nil {
+			return database.DBConnection{}, err
+		}
+	}
+
+	var cnx database.DBConnection
+
+	err = cnx.Connect(database.GetConnectionString(connectionMapped))
+	if err != nil {
+		return database.DBConnection{}, err
+	}
+	return cnx, nil
+}
+
 // createConnection Creates the connection with the given ID if it does not exist
 func createConnection(id int) error {
 	db := database.InternalDb
