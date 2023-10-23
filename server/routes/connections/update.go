@@ -16,6 +16,18 @@ type UpdateConnectionRequest struct {
 	Id       int    `json:"id"`
 }
 
+// HandleUpdateConnection
+// @BasePath /
+// @Summary Update a connection
+// @Description Update a connection
+// @Tags connections
+// @Accept json
+// @Produce json
+// @Param request body UpdateConnectionRequest true "Request body"
+// @Success 200 {object} object "Returns that the connection was updated successfully"
+// @Failure 400 {object} object "Returns that the request body is invalid or that some required fields are missing"
+// @Failure 404 {object} object "Returns that the connection with the given ID does not exist"
+// @Failure 500 {object} object "Internal error"
 func HandleUpdateConnection(c *gin.Context) {
 	var req UpdateConnectionRequest
 	err := c.ShouldBindJSON(&req)
@@ -38,7 +50,7 @@ func HandleUpdateConnection(c *gin.Context) {
 	exists, err := connections.CheckIfConnectionWithIdExists(req.Id)
 	if err != nil {
 		c.JSON(500, gin.H{
-			"error": err.Error(),
+			"error": "Error checking if connection exists: " + err.Error(),
 		})
 		return
 	}
@@ -52,12 +64,13 @@ func HandleUpdateConnection(c *gin.Context) {
 	_, err = db.RunQueryWithParams("UPDATE connections SET common_name = $2, database_name = $3, host = $4, port = $5, username = $6, ssl_mode = $7 WHERE id = $1", req.Id, req.Name, req.DbName, req.Host, req.Port, req.Username, req.SslMode)
 	if err != nil {
 		c.JSON(500, gin.H{
-			"error": err.Error(),
+			"error": "Error updating connection: " + err.Error(),
 		})
 		return
 	}
 
 	c.JSON(200, gin.H{
+		"error":   false,
 		"message": "Connection updated successfully",
 	})
 }

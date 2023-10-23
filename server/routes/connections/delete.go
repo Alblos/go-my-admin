@@ -7,6 +7,19 @@ import (
 	"strconv"
 )
 
+// HandleDeleteConnection
+// @BasePath /
+// @Summary Delete a connection
+// @Description Delete a connection
+// @Tags connections
+// @Accept json
+// @Produce json
+// @Param id path int true "Connection ID"
+// @Success 200 {object} object "Returns the success message"
+// @Failure 400 {object} object "Returns that the connection ID is invalid"
+// @Failure 404 {object} object "Returns that the connection does not exist"
+// @Failure 500 {object} object "Internal error"
+// @Router /connections/delete/{id} [delete]
 func HandleDeleteConnection(c *gin.Context) {
 	db := database.InternalDb
 
@@ -14,7 +27,7 @@ func HandleDeleteConnection(c *gin.Context) {
 
 	id, err := strconv.Atoi(connectionId)
 	if err != nil {
-		c.JSON(500, gin.H{
+		c.JSON(400, gin.H{
 			"error": "Invalid connection ID",
 		})
 		return
@@ -22,7 +35,7 @@ func HandleDeleteConnection(c *gin.Context) {
 	exists, err := connections.CheckIfConnectionWithIdExists(id)
 	if err != nil {
 		c.JSON(500, gin.H{
-			"error": err.Error(),
+			"error": "Error checking if connection exists: " + err.Error(),
 		})
 		return
 	}
@@ -36,12 +49,13 @@ func HandleDeleteConnection(c *gin.Context) {
 	_, err = db.RunQueryWithParams("DELETE FROM connections WHERE id = $1", connectionId)
 	if err != nil {
 		c.JSON(500, gin.H{
-			"error": err.Error(),
+			"error": "Error deleting connection: " + err.Error(),
 		})
 		return
 	}
 
 	c.JSON(200, gin.H{
+		"error":   false,
 		"message": "Connection deleted successfully",
 	})
 }

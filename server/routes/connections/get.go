@@ -8,13 +8,22 @@ import (
 	"strconv"
 )
 
+// HandleGetAllConnections
+// @BasePath /
+// @Summary Get all connections
+// @Description Get all connections
+// @Tags connections
+// @Produce json
+// @Success 200 {object} object "Returns the connections"
+// @Failure 500 {object} object "Internal error"
+// @Router /connections [get]
 func HandleGetAllConnections(c *gin.Context) {
 	db := database.InternalDb
 
 	connectionsInDb, err := db.RunRawQuery("SELECT id, common_name, database_name, host, port, username, ssl_mode FROM connections")
 	if err != nil {
 		c.JSON(500, gin.H{
-			"error": err.Error(),
+			"error": "Error getting connections: " + err.Error(),
 		})
 		return
 	}
@@ -26,7 +35,7 @@ func HandleGetAllConnections(c *gin.Context) {
 		err = connectionsInDb.Scan(&connection.Id, &connection.CommonName, &connection.DatabaseName, &connection.Host, &connection.Port, &connection.Username, &connection.SslMode)
 		if err != nil {
 			c.JSON(500, gin.H{
-				"error": err.Error(),
+				"error": "Error getting connections: " + err.Error(),
 			})
 			return
 		}
@@ -34,10 +43,23 @@ func HandleGetAllConnections(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{
+		"error":       false,
 		"connections": connectionsArray,
 	})
 }
 
+// HandleGetConnectionById
+// @BasePath /
+// @Summary Get a connection by ID
+// @Description Get a connection by ID
+// @Tags connections
+// @Produce json
+// @Param id path int true "Connection ID"
+// @Success 200 {object} object "Returns the connection data"
+// @Failure 400 {object} object "Returns that the connection ID is invalid"
+// @Failure 404 {object} object "Returns that the connection does not exist"
+// @Failure 500 {object} object "Internal error"
+// @Router /connections/{id} [get]
 func HandleGetConnectionById(c *gin.Context) {
 	db := database.InternalDb
 
@@ -45,7 +67,7 @@ func HandleGetConnectionById(c *gin.Context) {
 
 	id, err := strconv.Atoi(connectionId)
 	if err != nil {
-		c.JSON(500, gin.H{
+		c.JSON(400, gin.H{
 			"error": "Invalid connection ID",
 		})
 		return
@@ -53,7 +75,7 @@ func HandleGetConnectionById(c *gin.Context) {
 	exists, err := connections.CheckIfConnectionWithIdExists(id)
 	if err != nil {
 		c.JSON(500, gin.H{
-			"error": err.Error(),
+			"error": "Error checking if connection exists: " + err.Error(),
 		})
 		return
 	}
@@ -67,7 +89,7 @@ func HandleGetConnectionById(c *gin.Context) {
 	connection, err := db.RunQueryWithParams("SELECT id, common_name, database_name, host, port, username, ssl_mode FROM connections WHERE id = $1", connectionId)
 	if err != nil {
 		c.JSON(500, gin.H{
-			"error": err.Error(),
+			"error": "Error getting connection: " + err.Error(),
 		})
 		return
 	}
@@ -78,11 +100,14 @@ func HandleGetConnectionById(c *gin.Context) {
 		err = connection.Scan(&connectionMapped.Id, &connectionMapped.CommonName, &connectionMapped.DatabaseName, &connectionMapped.Host, &connectionMapped.Port, &connectionMapped.Username, &connectionMapped.SslMode)
 		if err != nil {
 			c.JSON(500, gin.H{
-				"error": err.Error(),
+				"error": "Error getting connection: " + err.Error(),
 			})
 			return
 		}
 	}
 
-	c.JSON(200, connectionMapped)
+	c.JSON(200, gin.H{
+		"error":      false,
+		"connection": connectionMapped,
+	})
 }

@@ -6,7 +6,18 @@ import (
 	"github.com/go-my-admin/server/utils/routes"
 )
 
-// HandleRefreshSchema refreshes the schema of a database
+// HandleRefreshSchema
+// @BasePath /
+// @Summary Refresh the schema of a database
+// @Description Refresh the schema of a database
+// @Tags interactDatabases
+// @Accept json
+// @Produce json
+// @Param connectionId path int true "Connection ID"
+// @Success 200 {object} object "Returns the schema"
+// @Failure 400 {object} object "Returns the error"
+// @Failure 501 {object} object "If the connection could not be established or the schema could not be retrieved"
+// @Router /schema/refresh/{connectionId} [get]
 func HandleRefreshSchema(c *gin.Context) {
 	done, id := routes.CheckIfConnectionIdExists(c)
 	if done {
@@ -15,8 +26,8 @@ func HandleRefreshSchema(c *gin.Context) {
 
 	schema, err := connections.GetFullDbSchema(id, false)
 	if err != nil {
-		c.JSON(500, gin.H{
-			"error": err.Error(),
+		c.JSON(501, gin.H{
+			"error": "Error getting schema: " + err.Error(),
 		})
 		return
 	}

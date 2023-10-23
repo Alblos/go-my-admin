@@ -16,6 +16,19 @@ type CreateConnectionRequest struct {
 	SslMode  string `json:"ssl_mode"`
 }
 
+// HandleCreateConnection
+// @BasePath /
+// @Summary Create a connection
+// @Description Create a connection
+// @Tags connections
+// @Accept json
+// @Produce json
+// @Param request body CreateConnectionRequest true "Request body"
+// @Success 200 {object} object "Returns the ID of the created connection"
+// @Failure 400 {object} object "Returns that the request body is invalid or that some required fields are missing"
+// @Failure 502 {object} object "If the connection could not be created"
+// @Failure 500 {object} object "Internal error"
+// @Router /connections/create [post]
 func HandleCreateConnection(c *gin.Context) {
 	var req CreateConnectionRequest
 	err := c.ShouldBindJSON(&req)
@@ -46,8 +59,8 @@ func HandleCreateConnection(c *gin.Context) {
 	}
 
 	if err != nil {
-		c.JSON(500, gin.H{
-			"error": err.Error(),
+		c.JSON(502, gin.H{
+			"error": "Error creating connection: " + err.Error(),
 		})
 		return
 	}
@@ -57,13 +70,14 @@ func HandleCreateConnection(c *gin.Context) {
 		err = rows.Scan(&id)
 		if err != nil {
 			c.JSON(500, gin.H{
-				"error": err.Error(),
+				"error": "Error scanning rows: " + err.Error(),
 			})
 			return
 		}
 	}
 
 	c.JSON(200, gin.H{
+		"error":   false,
 		"message": "Connection created successfully",
 		"id":      id,
 	})

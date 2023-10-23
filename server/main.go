@@ -2,11 +2,14 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/go-my-admin/server/docs"
 	"github.com/go-my-admin/server/logger"
 	"github.com/go-my-admin/server/routes/connections"
 	"github.com/go-my-admin/server/routes/general"
 	"github.com/go-my-admin/server/routes/interactDatabases"
 	"github.com/go-my-admin/server/utils/bootstrap"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
@@ -37,6 +40,8 @@ func main() {
 		return
 	}
 
+	docs.SwaggerInfo.BasePath = "/"
+
 	// Load middlewares
 	r.Use(gin.Recovery()) // Recover from panics and return 500 in case of panic
 
@@ -44,6 +49,7 @@ func main() {
 	general.Router(r)
 	connections.Router(r)
 	interactDatabases.Router(r)
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	err = r.Run(":3000")
 	if err != nil {

@@ -6,7 +6,18 @@ import (
 	"github.com/go-my-admin/server/utils/routes"
 )
 
-// HandleGetDbSchema gets the schema of a database
+// HandleGetDbSchema
+// @BasePath /
+// @Summary Get the schema of a database
+// @Description Get the schema of a database
+// @Tags interactDatabases
+// @Accept json
+// @Produce json
+// @Param connectionId path int true "Connection ID"
+// @Success 200 {object} object "Returns the schema"
+// @Failure 400 {object} object "Returns the error"
+// @Failure 501 {object} object "If the connection could not be established or the schema could not be retrieved"
+// @Router /schema/{connectionId} [get]
 func HandleGetDbSchema(c *gin.Context) {
 	done, id := routes.CheckIfConnectionIdExists(c)
 	if done {
@@ -15,8 +26,8 @@ func HandleGetDbSchema(c *gin.Context) {
 
 	schema, err := connections.GetFullDbSchema(id, true)
 	if err != nil {
-		c.JSON(500, gin.H{
-			"error": err.Error(),
+		c.JSON(501, gin.H{
+			"error": "Error getting schema: " + err.Error(),
 		})
 		return
 	}
