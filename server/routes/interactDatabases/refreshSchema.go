@@ -6,14 +6,14 @@ import (
 	"github.com/go-my-admin/server/utils/routes"
 )
 
-// HandleGetDbSchema gets the schema of a database
-func HandleGetDbSchema(c *gin.Context) {
+// HandleRefreshSchema refreshes the schema of a database
+func HandleRefreshSchema(c *gin.Context) {
 	done, id := routes.CheckIfConnectionIdExists(c)
 	if done {
 		return
 	}
 
-	schema, err := connections.GetFullDbSchema(id, true)
+	schema, err := connections.GetFullDbSchema(id, false)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"error": err.Error(),
@@ -25,5 +25,4 @@ func HandleGetDbSchema(c *gin.Context) {
 		"error":  false,
 		"schema": schema,
 	})
-
 }
