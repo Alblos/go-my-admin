@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-my-admin/server/docs"
 	"github.com/go-my-admin/server/logger"
@@ -44,6 +45,7 @@ func main() {
 
 	// Load middlewares
 	r.Use(gin.Recovery()) // Recover from panics and return 500 in case of panic
+	r.Use(cors.Default()) // Enable CORS for all routes
 
 	// Load routes
 	general.Router(r)
