@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-my-admin/server/connections"
+	"github.com/go-my-admin/server/routes/types"
 	"strconv"
 )
 
@@ -12,8 +13,9 @@ func CheckIfConnectionIdExists(c *gin.Context) (done bool, id int) {
 
 	id, err := strconv.Atoi(connectionId)
 	if err != nil {
-		c.JSON(500, gin.H{
-			"error": "Invalid connection ID",
+		c.JSON(400, types.ErrorResponse{
+			Error:   true,
+			Message: "Invalid connection ID",
 		})
 		return true, 0
 	}
@@ -25,8 +27,9 @@ func CheckIfConnectionIdExists(c *gin.Context) (done bool, id int) {
 		return true, 0
 	}
 	if !exists {
-		c.JSON(404, gin.H{
-			"error": "Connection with the given ID does not exist",
+		c.JSON(404, types.ErrorResponse{
+			Error:   true,
+			Message: "Connection with the given ID does not exist",
 		})
 		return true, 0
 	}
