@@ -1,7 +1,7 @@
 package auth_test
 
 import (
-	"github.com/go-my-admin/server/auth"
+	auth2 "github.com/go-my-admin/server/utils/auth"
 	"os"
 	"testing"
 	"time"
@@ -18,7 +18,7 @@ func TestCreateJWT(t *testing.T) {
 
 	t.Run("Should create correctlly a JWT", func(t *testing.T) {
 		t.Parallel()
-		token, err := auth.CreateJWT("test")
+		token, err := auth2.CreateJWT("test")
 		if err != nil || token == "" {
 			t.Error("Error creating JWT: ", err)
 			return
@@ -27,7 +27,7 @@ func TestCreateJWT(t *testing.T) {
 
 	t.Run("Should generate two different JWT", func(t *testing.T) {
 		t.Parallel()
-		tokenOne, err := auth.CreateJWT("test")
+		tokenOne, err := auth2.CreateJWT("test")
 		if err != nil || tokenOne == "" {
 			t.Error("Error creating JWT: ", err)
 			return
@@ -35,7 +35,7 @@ func TestCreateJWT(t *testing.T) {
 
 		time.Sleep(time.Second)
 
-		tokenTwo, err := auth.CreateJWT("test")
+		tokenTwo, err := auth2.CreateJWT("test")
 		if err != nil || tokenTwo == "" {
 			t.Error("Error creating JWT: ", err)
 			return
@@ -51,14 +51,14 @@ func TestCreateJWT(t *testing.T) {
 		t.Parallel()
 		// Generate a random username
 		username := "test" + time.Now().String()
-		token, err := auth.CreateJWT(username)
+		token, err := auth2.CreateJWT(username)
 		if err != nil || token == "" {
 			t.Error("Error creating JWT: ", err)
 			return
 		}
 
 		// Verify the token
-		usernameFromToken, authenticated, err := auth.VerifyJWT(token)
+		usernameFromToken, authenticated, err := auth2.VerifyJWT(token)
 		if err != nil || usernameFromToken == "" {
 			t.Error("Error verifying JWT: ", err)
 			return
