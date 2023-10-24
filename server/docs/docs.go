@@ -143,6 +143,58 @@ const docTemplate = `{
                 }
             }
         },
+        "/connections/test": {
+            "post": {
+                "description": "Test a connection",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "connections"
+                ],
+                "summary": "Test a connection",
+                "parameters": [
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/connections.TestConnectionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns if the connection could be established or not",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "400": {
+                        "description": "Returns that the request body is invalid or that some required fields are missing",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "402": {
+                        "description": "If the connection could not be established",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
         "/connections/update": {
             "put": {
                 "description": "Update a connection",
@@ -423,6 +475,29 @@ const docTemplate = `{
                 "common_name": {
                     "type": "string"
                 },
+                "db_name": {
+                    "type": "string"
+                },
+                "host": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "integer"
+                },
+                "ssl_mode": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "connections.TestConnectionRequest": {
+            "type": "object",
+            "properties": {
                 "db_name": {
                     "type": "string"
                 },

@@ -16,6 +16,21 @@ definitions:
       username:
         type: string
     type: object
+  connections.TestConnectionRequest:
+    properties:
+      db_name:
+        type: string
+      host:
+        type: string
+      password:
+        type: string
+      port:
+        type: integer
+      ssl_mode:
+        type: string
+      username:
+        type: string
+    type: object
   connections.UpdateConnectionRequest:
     properties:
       common_name:
@@ -155,6 +170,41 @@ paths:
           schema:
             type: object
       summary: Delete a connection
+      tags:
+      - connections
+  /connections/test:
+    post:
+      consumes:
+      - application/json
+      description: Test a connection
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/connections.TestConnectionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns if the connection could be established or not
+          schema:
+            type: object
+        "400":
+          description: Returns that the request body is invalid or that some required
+            fields are missing
+          schema:
+            type: object
+        "402":
+          description: If the connection could not be established
+          schema:
+            type: object
+        "500":
+          description: Internal error
+          schema:
+            type: object
+      summary: Test a connection
       tags:
       - connections
   /connections/update:
