@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/connections": {
             "get": {
-                "description": "Get all connections",
+                "description": "Gets all the connections that a user has added",
                 "produces": [
                     "application/json"
                 ],
@@ -27,15 +27,15 @@ const docTemplate = `{
                 "summary": "Get all connections",
                 "responses": {
                     "200": {
-                        "description": "Returns the connections",
+                        "description": "Returns all connections",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/connections.HandleGetAllConectionsResponse"
                         }
                     },
                     "500": {
                         "description": "Internal error",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/types.ErrorResponse"
                         }
                     }
                 }
@@ -43,7 +43,7 @@ const docTemplate = `{
         },
         "/connections/create": {
             "post": {
-                "description": "Create a connection",
+                "description": "Creates a connection with the given parameters",
                 "consumes": [
                     "application/json"
                 ],
@@ -61,33 +61,33 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/connections.CreateConnectionRequest"
+                            "$ref": "#/definitions/connections.HandleCreateConnectionRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns the ID of the created connection",
+                        "description": "The connection was created successfully",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/connections.HandleCreateConnectionResponse"
                         }
                     },
                     "400": {
-                        "description": "Returns that the request body is invalid or that some required fields are missing",
+                        "description": "The request body is invalid or that some required fields are missing",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/types.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal error",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/types.ErrorResponse"
                         }
                     },
                     "502": {
-                        "description": "If the connection could not be created",
+                        "description": "Error creating connection",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/types.ErrorResponse"
                         }
                     }
                 }
@@ -95,7 +95,7 @@ const docTemplate = `{
         },
         "/connections/delete/{id}": {
             "delete": {
-                "description": "Delete a connection",
+                "description": "Delete a connection with the given ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -117,27 +117,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns the success message",
+                        "description": "The connection was deleted successfully",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/connections.HandleDeleteConnectionResponse"
                         }
                     },
                     "400": {
-                        "description": "Returns that the connection ID is invalid",
+                        "description": "Invalid connection ID",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/types.ErrorResponse"
                         }
                     },
                     "404": {
-                        "description": "Returns that the connection does not exist",
+                        "description": "Connection with the given ID does not exist",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/types.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal error",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/types.ErrorResponse"
                         }
                     }
                 }
@@ -163,33 +163,33 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/connections.TestConnectionRequest"
+                            "$ref": "#/definitions/connections.HandleTestConnectionRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns if the connection could be established or not",
+                        "description": "The connection was tested successfully",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/connections.HandleTestConnectionResponse"
                         }
                     },
                     "400": {
-                        "description": "Returns that the request body is invalid or that some required fields are missing",
+                        "description": "The request body is invalid or that some required fields are missing",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/types.ErrorResponse"
                         }
                     },
                     "402": {
-                        "description": "If the connection could not be established",
+                        "description": "Connection could not be established",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/types.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal error",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/types.ErrorResponse"
                         }
                     }
                 }
@@ -215,33 +215,33 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/connections.UpdateConnectionRequest"
+                            "$ref": "#/definitions/connections.HandleUpdateConnectionRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns that the connection was updated successfully",
+                        "description": "The connection was updated successfully",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/connections.HandleUpdateConnectionResponse"
                         }
                     },
                     "400": {
-                        "description": "Returns that the request body is invalid or that some required fields are missing",
+                        "description": "The request body is invalid or that some required fields are missing",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/types.ErrorResponse"
                         }
                     },
                     "404": {
-                        "description": "Returns that the connection with the given ID does not exist",
+                        "description": "Connection with the given ID does not exist",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/types.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal error",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/types.ErrorResponse"
                         }
                     }
                 }
@@ -249,7 +249,7 @@ const docTemplate = `{
         },
         "/connections/{id}": {
             "get": {
-                "description": "Get a connection by ID",
+                "description": "Get the data of a connection by its ID",
                 "produces": [
                     "application/json"
                 ],
@@ -270,25 +270,25 @@ const docTemplate = `{
                     "200": {
                         "description": "Returns the connection data",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/connections.HandleGetConnectionByIdResponse"
                         }
                     },
                     "400": {
-                        "description": "Returns that the connection ID is invalid",
+                        "description": "Invalid connection ID",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/types.ErrorResponse"
                         }
                     },
                     "404": {
-                        "description": "Returns that the connection does not exist",
+                        "description": "Connection with the given ID does not exist",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/types.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal error",
                         "schema": {
-                            "type": "object"
+                            "$ref": "#/definitions/types.ErrorResponse"
                         }
                     }
                 }
@@ -469,7 +469,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "connections.CreateConnectionRequest": {
+        "connections.HandleCreateConnectionRequest": {
             "type": "object",
             "properties": {
                 "common_name": {
@@ -495,7 +495,57 @@ const docTemplate = `{
                 }
             }
         },
-        "connections.TestConnectionRequest": {
+        "connections.HandleCreateConnectionResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "connections.HandleDeleteConnectionResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "connections.HandleGetAllConectionsResponse": {
+            "type": "object",
+            "properties": {
+                "connections": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.Connection"
+                    }
+                },
+                "error": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "connections.HandleGetConnectionByIdResponse": {
+            "type": "object",
+            "properties": {
+                "connection": {
+                    "$ref": "#/definitions/types.Connection"
+                },
+                "error": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "connections.HandleTestConnectionRequest": {
             "type": "object",
             "properties": {
                 "db_name": {
@@ -518,7 +568,18 @@ const docTemplate = `{
                 }
             }
         },
-        "connections.UpdateConnectionRequest": {
+        "connections.HandleTestConnectionResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "connections.HandleUpdateConnectionRequest": {
             "type": "object",
             "properties": {
                 "common_name": {
@@ -544,10 +605,61 @@ const docTemplate = `{
                 }
             }
         },
+        "connections.HandleUpdateConnectionResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "interactDatabases.requestQuery": {
             "type": "object",
             "properties": {
                 "query": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.Connection": {
+            "type": "object",
+            "properties": {
+                "common_name": {
+                    "type": "string"
+                },
+                "database_name": {
+                    "type": "string"
+                },
+                "host": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "integer"
+                },
+                "ssl_mode": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "boolean"
+                },
+                "message": {
                     "type": "string"
                 }
             }

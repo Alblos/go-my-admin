@@ -53,6 +53,8 @@ func main() {
 	interactDatabases.Router(r)
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
+	logger.Info("Server running on port 3000")
+	logger.Info("Swagger running on http://localhost:3000/swagger/index.html")
 	err = r.Run(":3000")
 	if err != nil {
 		logger.Error("Error running server: ", err)
