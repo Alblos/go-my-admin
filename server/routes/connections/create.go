@@ -27,7 +27,6 @@ type HandleCreateConnectionResponse struct {
 // @BasePath /
 // @Summary Create a connection
 // @Description Creates a connection with the given parameters
-// @Authentication BearerToken
 // @Tags connections
 // @Accept json
 // @Produce json

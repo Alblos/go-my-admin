@@ -1,4 +1,36 @@
 definitions:
+  auth.HandleLoginRequest:
+    properties:
+      password:
+        type: string
+      usernameOrEmail:
+        type: string
+    type: object
+  auth.HandleLoginResponse:
+    properties:
+      error:
+        type: boolean
+      token:
+        type: string
+    type: object
+  auth.HandleSignUpRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  auth.HandleSignUpResponse:
+    properties:
+      error:
+        type: boolean
+      message:
+        type: string
+    type: object
   connections.HandleCreateConnectionRequest:
     properties:
       common_name:
@@ -128,6 +160,76 @@ definitions:
 info:
   contact: {}
 paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Logs in a user
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.HandleLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The user was logged in successfully
+          schema:
+            $ref: '#/definitions/auth.HandleLoginResponse'
+        "400":
+          description: The request body is invalid or that some required fields are
+            missing
+          schema:
+            $ref: '#/definitions/types.ErrorResponse'
+        "401":
+          description: Incorrect password
+          schema:
+            $ref: '#/definitions/types.ErrorResponse'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/types.ErrorResponse'
+      summary: Login
+      tags:
+      - auth
+  /auth/signup:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user if anyone with the same username or email exists
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.HandleSignUpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The user was registered successfully
+          schema:
+            $ref: '#/definitions/auth.HandleSignUpResponse'
+        "400":
+          description: The request body is invalid or that some required fields are
+            missing
+          schema:
+            $ref: '#/definitions/types.ErrorResponse'
+        "409":
+          description: User with the given username or email already exists
+          schema:
+            $ref: '#/definitions/types.ErrorResponse'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/types.ErrorResponse'
+      summary: Register a user
+      tags:
+      - auth
   /connections:
     get:
       description: Gets all the connections that a user has added

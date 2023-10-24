@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-my-admin/server/docs"
 	"github.com/go-my-admin/server/logger"
+	"github.com/go-my-admin/server/routes/auth"
 	"github.com/go-my-admin/server/routes/connections"
 	"github.com/go-my-admin/server/routes/general"
 	"github.com/go-my-admin/server/routes/interactDatabases"
@@ -49,6 +50,7 @@ func main() {
 
 	// Load routes
 	general.Router(r)
+	auth.Router(r)
 	connections.Router(r)
 	interactDatabases.Router(r)
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

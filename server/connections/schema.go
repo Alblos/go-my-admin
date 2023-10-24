@@ -33,7 +33,7 @@ func GetFullDbSchema(connectionId int, useCache bool) (map[string][]Column, erro
 		}
 	}(db.Cnx)
 
-	tables, err := getTablesInDatabase(connectionId, &db)
+	tables, err := getTablesInDatabase(&db)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func GetFullDbSchema(connectionId int, useCache bool) (map[string][]Column, erro
 		wg.Add(1)
 		go func(table string) {
 			defer wg.Done()
-			columns, err := getColumnsInTable(connectionId, table, &db)
+			columns, err := getColumnsInTable(table, &db)
 			if err != nil {
 				logger.Error("Could not get columns in table", err)
 				return
@@ -71,7 +71,7 @@ func GetFullDbSchema(connectionId int, useCache bool) (map[string][]Column, erro
 }
 
 // getTablesInDatabase returns a list of tables in the given database
-func getTablesInDatabase(connectionId int, db *database.DBConnection) ([]string, error) {
+func getTablesInDatabase(db *database.DBConnection) ([]string, error) {
 	var tables []string
 
 	rows, err := db.Cnx.Query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
@@ -97,7 +97,7 @@ type Column struct {
 }
 
 // getColumnsInTable returns a list of columns in the given table
-func getColumnsInTable(connectionId int, table string, db *database.DBConnection) ([]Column, error) {
+func getColumnsInTable(table string, db *database.DBConnection) ([]Column, error) {
 	var columns = make([]Column, 0)
 
 	rows, err := db.Cnx.Query("SELECT column_name, data_type FROM information_schema.columns WHERE table_name = $1", table)
