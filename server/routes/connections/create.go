@@ -30,6 +30,7 @@ type HandleCreateConnectionResponse struct {
 // @Tags connections
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer token"
 // @Param request body HandleCreateConnectionRequest true "Request body"
 // @Success 200 {object} HandleCreateConnectionResponse "The connection was created successfully"
 // @Failure 400 {object} types.ErrorResponse "The request body is invalid or that some required fields are missing"
@@ -60,11 +61,11 @@ func HandleCreateConnection(c *gin.Context) {
 	var rows *sql.Rows
 
 	if req.SslMode != "" {
-		rows, err = db.RunQueryWithParams("INSERT INTO connections (common_name, database_name, host, port, username, password, ssl_mode) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
-			req.Name, req.DbName, req.Host, req.Port, req.Username, req.Password, req.SslMode)
+		rows, err = db.RunQueryWithParams("INSERT INTO connections (common_name, database_name, host, port, username, password, ssl_mode, owner_id) VALUES ($1, $2, $3, $4, $5, $6, $7, (SELECT id FROM users WHERE username = $8)) RETURNING id",
+			req.Name, req.DbName, req.Host, req.Port, req.Username, req.Password, req.SslMode, c.GetString("username"))
 	} else {
-		rows, err = db.RunQueryWithParams("INSERT INTO connections (common_name, database_name, host, port, username, password) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
-			req.Name, req.DbName, req.Host, req.Port, req.Username, req.Password)
+		rows, err = db.RunQueryWithParams("INSERT INTO connections (common_name, database_name, host, port, username, password, owner_id) VALUES ($1, $2, $3, $4, $5, $6, (SELECT id FROM users WHERE username = $7)) RETURNING id",
+			req.Name, req.DbName, req.Host, req.Port, req.Username, req.Password, c.GetString("username"))
 	}
 
 	if err != nil {

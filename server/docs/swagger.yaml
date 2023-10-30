@@ -284,6 +284,11 @@ paths:
       - application/json
       description: Creates a connection with the given parameters
       parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Request body
         in: body
         name: request
@@ -319,6 +324,11 @@ paths:
       - application/json
       description: Delete a connection with the given ID
       parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Connection ID
         in: path
         name: id

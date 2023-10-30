@@ -160,6 +160,13 @@ const docTemplate = `{
                 "summary": "Create a connection",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "Request body",
                         "name": "request",
                         "in": "body",
@@ -211,6 +218,13 @@ const docTemplate = `{
                 ],
                 "summary": "Delete a connection",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "integer",
                         "description": "Connection ID",

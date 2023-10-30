@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-my-admin/server/docs"
 	"github.com/go-my-admin/server/logger"
+	"github.com/go-my-admin/server/middlewares"
 	"github.com/go-my-admin/server/routes/auth"
 	"github.com/go-my-admin/server/routes/connections"
 	"github.com/go-my-admin/server/routes/general"
@@ -51,9 +52,12 @@ func main() {
 	// Load routes
 	general.Router(r)
 	auth.Router(r)
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
+	// Load routes that require authentication
+	r.Use(middlewares.AuthMiddleware())
 	connections.Router(r)
 	interactDatabases.Router(r)
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	logger.Info("Server running on port 3000")
 	logger.Info("Swagger running on http://localhost:3000/swagger/index.html")

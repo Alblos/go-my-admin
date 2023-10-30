@@ -20,8 +20,9 @@ type HandleDeleteConnectionResponse struct {
 // @Tags connections
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer token"
 // @Param id path int true "Connection ID"
-// @Success 200 {object} HandleDeleteConnectionResponse "The connection was deleted successfully"
+// @Success 200 {object} HandleDeleteConnectionResponse "The connection was deleted successfully or you don't have permission to delete it"
 // @Failure 400 {object} types.ErrorResponse "Invalid connection ID"
 // @Failure 404 {object} types.ErrorResponse "Connection with the given ID does not exist"
 // @Failure 500 {object} types.ErrorResponse "Internal error"
@@ -55,7 +56,7 @@ func HandleDeleteConnection(c *gin.Context) {
 		return
 	}
 
-	_, err = db.RunQueryWithParams("DELETE FROM connections WHERE id = $1", connectionId)
+	_, err = db.RunQueryWithParams("DELETE FROM connections WHERE id = $1 AND owner_id = (SELECT id FROM users WHERE username = $2)", id, c.GetString("username"))
 	if err != nil {
 		c.JSON(500, types.ErrorResponse{
 			Error:   true,
