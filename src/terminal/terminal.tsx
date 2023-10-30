@@ -50,7 +50,12 @@ export default function Terminal({ }: Props) {
 
     return (
         <ProjectLayout>
-            <ControlledEditor beforeMount={handleEditorWillMount} onMount={handleEditorDidMount} className='ml-12 w-full bg-white' theme='vs-dark' height="45vh" width={"full"} defaultLanguage="sql" defaultValue="// some comment" />
+            <div className='w-full flex items-center justify-between'>
+                <div className='text-4xl font-bold'>
+                    Query
+                </div>
+            </div>
+            <ControlledEditor beforeMount={handleEditorWillMount} onMount={handleEditorDidMount} className='mt-4 w-full bg-white' theme='vs-dark' height="45vh" width={"full"} defaultLanguage="sql" defaultValue="// some comment" />
         </ProjectLayout>
     )
 }
