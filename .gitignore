@@ -25,3 +25,6 @@ dist-ssr
 
 # Ficheros de secretos
 .env
+
+go.sum
+server/yarn.lock
