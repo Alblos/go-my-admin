@@ -44,6 +44,14 @@ func HandleLogin(c *gin.Context) {
 		return
 	}
 
+	if req.UsernameOrEmail == "" || req.Password == "" {
+		c.JSON(400, types.ErrorResponse{
+			Error:   true,
+			Message: "Missing required fields",
+		})
+		return
+	}
+
 	// Get user from database
 	db := database.InternalDb
 
@@ -70,6 +78,7 @@ func HandleLogin(c *gin.Context) {
 		return
 	}
 
+	var token string
 	for rows.Next() {
 		var user userRow
 		err = rows.Scan(&user.Id, &user.Username, &user.Email, &user.HashedPassword)
@@ -91,7 +100,7 @@ func HandleLogin(c *gin.Context) {
 		}
 
 		// Create JWT
-		token, err := auth.CreateJWT(user.Username)
+		token, err = auth.CreateJWT(user.Username)
 		if err != nil {
 			c.JSON(500, types.ErrorResponse{
 				Error:   true,
@@ -107,4 +116,8 @@ func HandleLogin(c *gin.Context) {
 		return
 	}
 
+	c.JSON(401, types.ErrorResponse{
+		Error:   true,
+		Message: "Incorrect username or email",
+	})
 }
