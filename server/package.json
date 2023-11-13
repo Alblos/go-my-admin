@@ -1,0 +1,17 @@
+{
+  "name": "go-my-admin-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "test": "go test ./... && mocha"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.3",
+    "axios": "^1.6.0",
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0",
+    "pg": "^8.11.3"
+  }
+}
