@@ -12,7 +12,7 @@ CREATE TABLE if not exists users
 CREATE TABLE if not exists connections
 (
     id            serial primary key,
-    owner_id      int          not null references users (id),
+    owner_id      int          not null references users (id) on delete cascade on update cascade,
     created_at    timestamp default current_timestamp,
     database_name varchar(255) not null,
     host          varchar(255) not null,
